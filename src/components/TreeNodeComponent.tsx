@@ -1,38 +1,37 @@
-import { useRecoilValue } from 'recoil';
-import { ActionBlock } from './ActionBlock';
-import { TreeNode, treeFamily } from '../store/data';
-import { memo } from 'react';
-import { Box } from '@mui/material';
+import { useRecoilValue } from "recoil";
+import { ActionBlock } from "./ActionBlock";
+import { TreeNode, treeFamily, Node } from "../store/data";
+import { useMemo } from "react";
+import { Box } from "@mui/material";
 
-type Props = { nodeId: TreeNode['id'] };
-
-type NodeElementProps = {
-  name: string;
-  isBranch: boolean;
-  id: string;
-};
-
-const NodeElement = memo(({ name, id, isBranch }: NodeElementProps) => (
-  <Box sx={{ fontWeight: isBranch ? 600 : 400 }}>
-    [{id}]: {name}
-  </Box>
-));
+type Props = { nodeId: TreeNode["id"] };
 
 export const TreeNodeComponent = ({ nodeId }: Props) => {
-  const currentNode = useRecoilValue(treeFamily(nodeId));
-  const isBranch = Boolean(currentNode?.actions.length);
+  const { actions, id, name } =
+    useRecoilValue(treeFamily(nodeId)) || ({} as Node);
+  const isBranch = Boolean(actions.length);
+  const childrenHash = actions?.join() || "";
 
-  return currentNode ? (
-    <ActionBlock
-      childrenHash={currentNode?.actions.join() || ''}
-      {...{ isBranch }}
-      nodeElement={
-        <NodeElement {...{ isBranch }} name={currentNode.name} id={nodeId} />
-      }
-    >
-      {currentNode.actions.map((childNodeId) => (
+  console.log("RENDER", childrenHash, id, name);
+
+  const nodeElement = useMemo(
+    () => (
+      <Box sx={{ fontWeight: isBranch ? 600 : 400 }}>
+        [{id}]: {name}
+      </Box>
+    ),
+    [id, name]
+  );
+
+  const childElement = useMemo(
+    () =>
+      actions.map((childNodeId) => (
         <TreeNodeComponent key={childNodeId} nodeId={childNodeId} />
-      ))}
-    </ActionBlock>
-  ) : null;
+      )),
+    [childrenHash]
+  );
+
+  return (
+    <ActionBlock {...{ isBranch, nodeElement }}>{childElement}</ActionBlock>
+  );
 };

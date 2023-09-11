@@ -1,20 +1,18 @@
-import { FC, PropsWithChildren, ReactNode, memo } from 'react';
+import { FC, PropsWithChildren, ReactNode, memo } from "react";
 import {
   Accordion,
   AccordionDetails,
   Paper,
   Stack,
-  Item,
   styled,
-} from '@mui/material';
+} from "@mui/material";
 import MuiAccordionSummary, {
   AccordionSummaryProps,
-} from '@mui/material/AccordionSummary';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import { useRender } from '../hooks/useRender';
+} from "@mui/material/AccordionSummary";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import { useRender } from "../hooks/useRender";
 
 type Props = PropsWithChildren<{
-  childrenHash: string;
   nodeElement: ReactNode;
   isBranch: boolean;
 }>;
@@ -22,11 +20,11 @@ type Props = PropsWithChildren<{
 const AccordionSummary = styled((props: AccordionSummaryProps) => (
   <MuiAccordionSummary expandIcon={<ChevronRightIcon />} {...props} />
 ))(({ theme }) => ({
-  flexDirection: 'row-reverse',
-  '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
-    transform: 'rotate(90deg)',
+  flexDirection: "row-reverse",
+  "& .MuiAccordionSummary-expandIconWrapper.Mui-expanded": {
+    transform: "rotate(90deg)",
   },
-  '& .MuiAccordionSummary-content': {
+  "& .MuiAccordionSummary-content": {
     marginLeft: theme.spacing(1),
   },
 }));
@@ -40,7 +38,7 @@ export const ActionBlock: FC<Props> = memo(
       <Accordion
         defaultExpanded={true}
         disableGutters
-        sx={{ backgroundColor: 'rgba(117, 178, 221, 0.2)' }}
+        sx={{ backgroundColor: "rgba(117, 178, 221, 0.2)" }}
         ref={renderElementRef}
       >
         <AccordionSummary>{nodeElement}</AccordionSummary>
@@ -49,14 +47,7 @@ export const ActionBlock: FC<Props> = memo(
         </AccordionDetails>
       </Accordion>
     ) : (
-      <Paper sx={{ p: 2, backgroundColor: '#9DE7D7' }}>{nodeElement}</Paper>
+      <Paper sx={{ p: 2, backgroundColor: "#211551" }}>{nodeElement}</Paper>
     );
-  },
-  (oldProps, newProps) =>
-    isArray(oldProps.children) &&
-    isArray(newProps.children) &&
-    // check all childred match, exept last ones (recursion)
-    isEqual(oldProps.children.slice(0, -1), newProps.children?.slice(0, -1)) &&
-    // check children "snapshot"
-    oldProps.childrenHash === newProps.childrenHash
+  }
 );
