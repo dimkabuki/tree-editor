@@ -1,0 +1,15 @@
+.rerender-effect {
+  outline: 3px solid transparent;
+  animation: fade 1s linear;
+}
+@keyframes fade {
+  0% {
+    outline-color: transparent;
+  }
+  50% {
+    outline-color: #be3455;
+  }
+  100% {
+    outline-color: transparent;
+  }
+}
