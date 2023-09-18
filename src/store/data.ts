@@ -1,5 +1,5 @@
-import { flatMapDeep } from 'lodash';
-import { atomFamily } from 'recoil';
+import { flatMapDeep } from "lodash";
+import { atomFamily, selectorFamily } from "recoil";
 
 export type TreeNode = {
   actions: TreeNode[];
@@ -15,25 +15,25 @@ export type Node = {
 };
 
 export const rawTestCase: TreeNode = {
-  id: 'root',
-  name: 'Test Case example',
+  id: "root",
+  name: "Test Case example",
   actions: [
     {
-      id: 'd2d61080',
-      name: 'Module Folder',
+      id: "d2d61080",
+      name: "Module Folder",
       actions: [
         {
-          id: '492e3d14',
-          name: 'Control 1',
+          id: "492e3d14",
+          name: "Control 1",
           actions: [],
         },
         {
-          id: '9edd73a1',
-          name: 'Inner Folder',
+          id: "9edd73a1",
+          name: "Inner Folder",
           actions: [
             {
-              id: '3800b121',
-              name: 'Control 2',
+              id: "3800b121",
+              name: "Control 2",
               actions: [],
             },
           ],
@@ -41,23 +41,23 @@ export const rawTestCase: TreeNode = {
       ],
     },
     {
-      id: '6f3635d1',
-      name: 'Shared Actions',
+      id: "6f3635d1",
+      name: "Shared Actions",
       actions: [],
     },
     {
-      id: 'aa2f03b7',
-      name: 'Predefined Action',
+      id: "aa2f03b7",
+      name: "Predefined Action",
       actions: [],
     },
     {
-      id: '86cd7c9d',
-      name: 'TABLE',
+      id: "86cd7c9d",
+      name: "TABLE",
       actions: [],
     },
     {
-      id: '7b7138d1',
-      name: 'Condition',
+      id: "7b7138d1",
+      name: "Condition",
       actions: [],
     },
   ],
@@ -65,7 +65,7 @@ export const rawTestCase: TreeNode = {
 
 const flattenTree = (
   tree: TreeNode[],
-  parentId: Node['parentId'] = 'root'
+  parentId: Node["parentId"] = "root"
 ): Node[] =>
   flatMapDeep<TreeNode, Node>(tree, ({ id, name, actions }) => [
     { id, name, parentId, actions: actions.map(({ id }) => id) },
@@ -77,8 +77,22 @@ export const flatTestCase = new Map(
 );
 
 export const treeFamily = atomFamily({
-  key: 'treeFamily',
-  default: (id: Node['id']) => flatTestCase.get(id),
+  key: "treeFamily",
+  default: (id: string) => flatTestCase.get(id),
+});
+
+export const treeFamilyAction = selectorFamily<Node | undefined, string>({
+  key: "treeFamilyAction",
+  get:
+    (nodeId) =>
+    ({ get }) =>
+      get(treeFamily(nodeId)),
+  set:
+    (nodeId) =>
+    ({ set, get }, payload) => {
+      console.log("SET", payload);
+      return undefined;
+    },
 });
 
 // const updateNode = useSetRecoilState(

@@ -1,18 +1,21 @@
-import { useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 import { ActionBlock } from "./ActionBlock";
-import { TreeNode, treeFamily, Node } from "../store/data";
+import { TreeNode, treeFamilyAction } from "../store/data";
 import { useMemo } from "react";
 import { Box } from "@mui/material";
 
 type Props = { nodeId: TreeNode["id"] };
 
 export const TreeNodeComponent = ({ nodeId }: Props) => {
-  const { actions, id, name } =
-    useRecoilValue(treeFamily(nodeId)) || ({} as Node);
-  const isBranch = Boolean(actions.length);
-  const childrenHash = actions?.join() || "";
+  const [node, dispatchNodeAction] = useRecoilState(treeFamilyAction(nodeId));
+  const isBranch = Boolean(node?.actions.length);
+  const childrenHash = node?.actions.join() || "";
 
-  console.log("RENDER", childrenHash, id, name);
+  console.log("RENDER", node, childrenHash);
+
+  if (!node?.id) return null;
+
+  const { id, name, actions } = node;
 
   const nodeElement = useMemo(
     () => (
@@ -32,6 +35,14 @@ export const TreeNodeComponent = ({ nodeId }: Props) => {
   );
 
   return (
-    <ActionBlock {...{ isBranch, nodeElement }}>{childElement}</ActionBlock>
+    <ActionBlock
+      {...{
+        isBranch,
+        nodeElement,
+        onDeleteClick: () => dispatchNodeAction(node, "delete"),
+      }}
+    >
+      {childElement}
+    </ActionBlock>
   );
 };
