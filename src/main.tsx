@@ -1,20 +1,11 @@
-import * as ReactDOM from "react-dom/client";
-import { ThemeProvider } from "@emotion/react";
-import { CssBaseline, createTheme } from "@mui/material";
-import { RecoilRoot } from "recoil";
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
 import { App } from "./components/App";
 
-const darkTheme = createTheme({
-  palette: {
-    mode: "dark",
-  },
-});
+const root = createRoot(document.getElementById("root") as HTMLElement);
 
-ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  <ThemeProvider theme={darkTheme}>
-    <CssBaseline />
-    <RecoilRoot>
-      <App />
-    </RecoilRoot>
-  </ThemeProvider>
+root.render(
+  <StrictMode>
+    <App />
+  </StrictMode>
 );
